@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS USERS;
+
+CREATE TABLE USERS (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    birthdate DATE NOT NULL,
+    country VARCHAR(255) NOT NULL,
+    phone VARCHAR(12),
+    gender CHAR
+);

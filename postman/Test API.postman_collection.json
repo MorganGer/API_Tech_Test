@@ -1,0 +1,74 @@
+{
+	"info": {
+		"_postman_id": "1cf4743e-027b-4b7f-8f0a-8e065ebfbe98",
+		"name": "Test API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30163286"
+	},
+	"item": [
+		{
+			"name": "GetUser",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getuser?id=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getuser"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/createuser?username=Toto&birthdate=2001-12-01&country=France&phone=0611223344&gender=M",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"createuser"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "Toto"
+						},
+						{
+							"key": "birthdate",
+							"value": "2001-12-01"
+						},
+						{
+							"key": "country",
+							"value": "France"
+						},
+						{
+							"key": "phone",
+							"value": "0611223344"
+						},
+						{
+							"key": "gender",
+							"value": "M"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
