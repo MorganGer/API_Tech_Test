@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ApiTechTestApplicationTests {
+class ApiTechTestApplicationTU {
 
 	@Autowired
 	UserService userService;
