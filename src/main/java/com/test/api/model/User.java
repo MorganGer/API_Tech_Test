@@ -1,8 +1,7 @@
 package com.test.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
-import java.sql.Date;
 
 @Entity
 @Table(name = "USERS")
@@ -11,19 +10,20 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
+    @JsonIgnore
     private int id;
     @Column
     private String username;
     @Column
-    private Date birthdate;
+    private String birthdate;
     @Column
     private String country;
     @Column
     private String phone;
     @Column
-    private Character gender;
+    private String gender;
 
-    public User(String username, Date birthdate, String country, String phone, Character gender) {
+    public User(String username, String birthdate, String country, String phone, String gender) {
         this.username = username;
         this.birthdate = birthdate;
         this.country = country;
@@ -51,11 +51,11 @@ public class User {
         this.username = username;
     }
 
-    public Date getBirthdate() {
+    public String getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
     }
 
@@ -75,11 +75,11 @@ public class User {
         this.phone = phone;
     }
 
-    public Character getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(Character gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 }

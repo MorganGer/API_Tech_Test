@@ -7,10 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,16 +37,22 @@ public class ApiTechTestApplicationTI {
 
     @Test
     void testCreateUser(){
-        MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-        params.add("username", "Michel");
-        params.add("birthdate", "2000-01-01");
-        params.add("country", "France");
-        params.add("phone", "1122334455");
-        params.add("gender", "M");
+//        MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
+//        params.add("username", "Michel");
+//        params.add("birthdate", "2000-01-01");
+//        params.add("country", "France");
+//        params.add("phone", "1122334455");
+//        params.add("gender", "M");
+//
+//        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(params);
 
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(params);
+        User user = new User("Michel",
+                "2000-01-01",
+                "France",
+                "1122334455",
+                "M");
 
-        String response = restTemplate.postForObject(baseUrl.concat("/createuser"), requestEntity, String.class);
+        String response = restTemplate.postForObject(baseUrl.concat("/createuser"), user, String.class);
         assert response != null;
         assertEquals("New user created", response);
         assertEquals(1, testH2Repository.findAll().size());
@@ -69,7 +72,7 @@ public class ApiTechTestApplicationTI {
                 () -> assertEquals("2000-01-01", String.valueOf(response.getBirthdate())),
                 () -> assertEquals("France", response.getCountry()),
                 () -> assertEquals("1122334455", response.getPhone()),
-                () -> assertEquals('M', response.getGender())
+                () -> assertEquals("M", response.getGender())
         );
     }
 

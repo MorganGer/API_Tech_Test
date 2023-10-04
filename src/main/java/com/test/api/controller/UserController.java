@@ -36,29 +36,23 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/createuser")
-    public ResponseEntity<String> createUser(@RequestParam String username,
-                                     @RequestParam String birthdate,
-                                     @RequestParam String country,
-                                     @RequestParam(required = false) String phone, //phone et gender sont des paramètres optionnels
-                                     @RequestParam(required = false) Character gender) {
+    @PostMapping(value = "/createuser", consumes = {"application/json"})
+    public ResponseEntity<String> createUser(@RequestBody User user) {
 
         String regexPattern = "\\d{4}-\\d{2}-\\d{2}";
         Pattern pattern = Pattern.compile(regexPattern);
-        Matcher matcher = pattern.matcher(birthdate);
+        Matcher matcher = pattern.matcher(String.valueOf(user.getBirthdate()));
 
-        if(!username.isEmpty() && !country.isEmpty() && matcher.matches()){ //Si le username et le country sont renseignés et que la birthdate est au bon format
+        if(!user.getUsername().isEmpty() && !user.getCountry().isEmpty() && matcher.matches()){ //Si le username et le country sont renseignés et que la birthdate est au bon format
             try {
-                Date formatBirthdate = Date.valueOf(birthdate); //On formate la date pour correspondre au format SQL
-
                 Calendar calBirthdate = Calendar.getInstance();
-                calBirthdate.setTime(formatBirthdate);
+                calBirthdate.setTime(Date.valueOf(user.getBirthdate()));
 
                 Calendar calNow = Calendar.getInstance();
                 calNow.add(Calendar.YEAR, -18); //On enlève 18 ans pour vérifier que le User est adulte
 
-                if ("France".equalsIgnoreCase(country) && calBirthdate.before(calNow)) { //Si User Francais et Adulte, on le crée
-                    userService.createUser(username, formatBirthdate, country, phone, gender);
+                if ("France".equalsIgnoreCase(user.getCountry()) && calBirthdate.before(calNow)) { //Si User Francais et Adulte, on le crée
+                    userService.createUser(user);
                     return new ResponseEntity<>("New user created", HttpStatus.CREATED);
                 } else { //Sinon, on renvoie une erreur HTTP 400
                     return new ResponseEntity<>("User creation is allowed only for adults from France.", HttpStatus.BAD_REQUEST);

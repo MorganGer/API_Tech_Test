@@ -1,5 +1,6 @@
 package com.test.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.api.controller.UserController;
 import com.test.api.model.User;
 import com.test.api.repository.UserRepository;
@@ -13,8 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.sql.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -44,19 +43,19 @@ class ApiTechTestApplicationTU {
 
 	@Test
 	void testCreateUser() throws Exception {
-		String username = "Michel";
-		String birthdate = "2000-01-01";
-		String country = "France";
-		String phone = "1234567890";
-		char gender = 'M';
+		User user = new User("Michel",
+				"2000-01-01",
+				"France",
+				"1122334455",
+				"M"
+		);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String userJson = objectMapper.writeValueAsString(user);
 
 		MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders
 						.post("/createuser")
-						.param("username", username)
-						.param("birthdate", birthdate)
-						.param("country", country)
-						.param("phone", phone)
-						.param("gender", Character.toString(gender))
+						.param("user", userJson)
 						.contentType(MediaType.APPLICATION_FORM_URLENCODED))
 				.andReturn().getResponse();
 
@@ -65,35 +64,38 @@ class ApiTechTestApplicationTU {
 
 	@Test
 	void testCreateUserService() {
-		userService.createUser("Michel",
-				Date.valueOf("2000-01-01"),
+		User user = new User("Michel",
+				"2000-01-01",
 				"France",
-				"1234567890",
-				'M');
+				"1122334455",
+				"M"
+		);
+
+		userService.createUser(user);
 		User userResponse = userService.getUserById(1);
 		assertEquals("Michel", userResponse.getUsername());
-		assertEquals("2000-01-01", userResponse.getBirthdate().toString());
+		assertEquals("2000-01-01", userResponse.getBirthdate());
 		assertEquals("France", userResponse.getCountry());
-		assertEquals("1234567890", userResponse.getPhone());
-		assertEquals('M', userResponse.getGender());
+		assertEquals("1122334455", userResponse.getPhone());
+		assertEquals("M", userResponse.getGender());
 	}
 
 	@Test
 	void testCreateUserWrongDateFormat() throws Exception {
-		String username = "Michel";
-		String birthdate = "01-01-2000";
-		String country = "France";
-		String phone = "1234567890";
-		char gender = 'M';
+		User user = new User("Michel",
+				"01-01-2000",
+				"France",
+				"1122334455",
+				"M"
+		);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		String userJson = objectMapper.writeValueAsString(user);
 
 		MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders
 						.post("/createuser")
-						.param("username", username)
-						.param("birthdate", birthdate)
-						.param("country", country)
-						.param("phone", phone)
-						.param("gender", Character.toString(gender))
-						.contentType(MediaType.APPLICATION_FORM_URLENCODED))
+						.param("user", userJson)
+						.contentType(MediaType.APPLICATION_JSON))
 				.andReturn().getResponse();
 
 		String expectedResponse = "Information is wrong or not in the correct format (use yyyy-MM-dd for birthdate)";
@@ -103,20 +105,21 @@ class ApiTechTestApplicationTU {
 
 	@Test
 	void testCreateUserNotFrance() throws Exception {
-		String username = "Michel";
-		String birthdate = "2000-01-01";
-		String country = "Spain";
-		String phone = "1234567890";
-		char gender = 'M';
+		User user = new User("Michel",
+				"2000-01-01",
+				"Spain",
+				"1122334455",
+				"M"
+		);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String userJson = objectMapper.writeValueAsString(user);
+
 
 		MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders
 						.post("/createuser")
-						.param("username", username)
-						.param("birthdate", birthdate)
-						.param("country", country)
-						.param("phone", phone)
-						.param("gender", Character.toString(gender))
-						.contentType(MediaType.APPLICATION_FORM_URLENCODED))
+						.param("user", userJson)
+						.contentType(MediaType.APPLICATION_JSON))
 				.andReturn().getResponse();
 
 		String expectedResponse = "User creation is allowed only for adults from France.";
@@ -126,20 +129,21 @@ class ApiTechTestApplicationTU {
 
 	@Test
 	void testCreateUserNotAdult() throws Exception {
-		String username = "Michel";
-		String birthdate = "2010-01-01";
-		String country = "France";
-		String phone = "1234567890";
-		char gender = 'M';
+		User user = new User("Michel",
+				"2010-01-01",
+				"France",
+				"1122334455",
+				"M"
+		);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String userJson = objectMapper.writeValueAsString(user);
+
 
 		MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders
 						.post("/createuser")
-						.param("username", username)
-						.param("birthdate", birthdate)
-						.param("country", country)
-						.param("phone", phone)
-						.param("gender", Character.toString(gender))
-						.contentType(MediaType.APPLICATION_FORM_URLENCODED))
+						.param("user", userJson)
+						.contentType(MediaType.APPLICATION_JSON))
 				.andReturn().getResponse();
 
 		status().isBadRequest();
@@ -149,20 +153,21 @@ class ApiTechTestApplicationTU {
 
 	@Test
 	void testCreateUserNoPhone() throws Exception {
-		String username = "Michel";
-		String birthdate = "2000-01-01";
-		String country = "France";
-		String phone = "";
-		char gender = 'M';
+		User user = new User("Michel",
+				"2000-01-01",
+				"France",
+				"",
+				"M"
+		);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String userJson = objectMapper.writeValueAsString(user);
+
 
 		MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders
 						.post("/createuser")
-						.param("username", username)
-						.param("birthdate", birthdate)
-						.param("country", country)
-						.param("phone", phone)
-						.param("gender", Character.toString(gender))
-						.contentType(MediaType.APPLICATION_FORM_URLENCODED))
+						.param("user", userJson)
+						.contentType(MediaType.APPLICATION_JSON))
 				.andReturn().getResponse();
 
 		assertEquals(201, response.getStatus());
@@ -170,19 +175,20 @@ class ApiTechTestApplicationTU {
 
 	@Test
 	void testCreateUserNoGender() throws Exception {
-		String username = "Michel";
-		String birthdate = "2000-01-01";
-		String country = "France";
-		String phone = "123456789";
+		User user = new User("Michel",
+				"2000-01-01",
+				"France",
+				"1122334455",
+				""
+		);
 
+		ObjectMapper objectMapper = new ObjectMapper();
+		String userJson = objectMapper.writeValueAsString(user);
+		
 		MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders
 						.post("/createuser")
-						.param("username", username)
-						.param("birthdate", birthdate)
-						.param("country", country)
-						.param("phone", phone)
-						.param("gender", "")
-						.contentType(MediaType.APPLICATION_FORM_URLENCODED))
+						.param("user", userJson)
+						.contentType(MediaType.APPLICATION_JSON))
 				.andReturn().getResponse();
 
 		assertEquals(201, response.getStatus());
@@ -190,11 +196,14 @@ class ApiTechTestApplicationTU {
 
 	@Test
 	void testGetUser() throws Exception {
-		userService.createUser("Michel",
-				Date.valueOf("2000-01-01"),
+		User user = new User("Michel",
+				"2000-01-01",
 				"France",
-				"1234567890",
-				'M');
+				"1122334455",
+				"M"
+		);
+
+		userService.createUser(user);
 
 		MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders
 						.get("/getuser")
@@ -207,11 +216,13 @@ class ApiTechTestApplicationTU {
 
 	@Test
 	void testGetUserNonExistant() throws Exception {
-		userService.createUser("Michel",
-				Date.valueOf("2000-01-01"),
+		User user = new User("Michel",
+				"2000-01-01",
 				"France",
-				"1234567890",
-				'M');
+				"1122334455",
+				"M"
+		);
+		userService.createUser(user);
 
 		MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders
 						.get("/getuser")
@@ -224,11 +235,14 @@ class ApiTechTestApplicationTU {
 
 	@Test
 	void testGetUserWrongParameter() throws Exception {
-		userService.createUser("Michel",
-				Date.valueOf("2000-01-01"),
+		User user = new User("Michel",
+				"2000-01-01",
 				"France",
-				"1234567890",
-				'M');
+				"1122334455",
+				"M"
+		);
+
+		userService.createUser(user);
 
 		MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders
 						.get("/getuser")
