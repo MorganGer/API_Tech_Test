@@ -61,7 +61,7 @@ public class UserController {
                     userService.createUser(username, formatBirthdate, country, phone, gender);
                     return new ResponseEntity<>("New user created", HttpStatus.CREATED);
                 } else { //Sinon, on renvoie une erreur HTTP 400
-                    return new ResponseEntity<>("User creation is allowed only for France.", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("User creation is allowed only for adults from France.", HttpStatus.BAD_REQUEST);
 
                 }
             } catch (Exception exception) { //En cas d'erreur de traitement, erreur serveur interne 500
